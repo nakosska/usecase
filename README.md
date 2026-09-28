@@ -18,3 +18,9 @@ sudo rm -rf /var/www/html/glpi/files/_sessions/*
 
 
 sudo systemctl restart apache2
+
+
+sudo chmod 755 /var /var/www /var/www/html
+
+sudo chmod 755 /var/www/html/glpi /var/www/html/glpi/public
+sudo chmod 644 /var/www/html/glpi/public/index.php
