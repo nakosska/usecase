@@ -15,12 +15,28 @@ sudo find /var/www/html/glpi -type f -exec chmod 644 {} \;
 
 sudo rm -rf /var/www/html/glpi/files/_cache/*
 sudo rm -rf /var/www/html/glpi/files/_sessions/*
+sudo systemctl restart apache2
+sudo chmod 755 /var /var/www /var/www/html
 
 
+DROP DATABASE glpi;
+CREATE DATABASE glpi CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'glpi'@'localhost' IDENTIFIED BY 'debian';
+GRANT ALL PRIVILEGES ON glpi.* TO 'glpi'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+
+
+sudo ln -s /var/www/html/glpi/install /var/www/html/glpi/public/install
 sudo systemctl restart apache2
 
 
-sudo chmod 755 /var /var/www /var/www/html
+
+
+sudo rm -rf /var/www/html/glpi/install
+sudo rm /var/www/html/glpi/public/install
+
+
 
 sudo chmod 755 /var/www/html/glpi /var/www/html/glpi/public
 sudo chmod 644 /var/www/html/glpi/public/index.php
