@@ -53,7 +53,13 @@ ls /var/www/html/glpi
 
 
 sudo cp -r /tmp/glpi_config_backup/* /var/www/html/glpi/config/
-sudo cp -r /tmp/glpi_files_backup/* /var/www/html/glpi/files/
+sudo cp -r /tmp/glpi_files_backup/* 
+
+
+
+
+
+/var/www/html/glpi/files/
 
 sudo chown -R www-data:www-data /var/www/html/glpi
 sudo chmod -R 755 /var/www/html/glpi
@@ -64,3 +70,14 @@ sudo systemctl restart apache2
 
 sudo ln -s /var/www/html/glpi/install /var/www/html/glpi/public/install
 sudo systemctl restart apache2
+
+
+
+
+
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
