@@ -35,3 +35,27 @@ sudo chown -R www-data:www-data /var/www/html/glpi
 sudo chmod -R 755 /var/www/html/glpi
 sudo chmod -R 775 /var/www/html/glpi/files
 sudo systemctl restart apache2
+
+
+
+
+
+ls -d /tmp/glpi_config_backup /tmp/glpi_files_backup /var/www/html/glpi_old /var/www/html/glpi
+
+
+ls -lh /backup/glpi/
+
+
+sudo tar -xzvf /backup/glpi/glpi_files_2026-10-14.tar.gz -C /tmp/
+
+
+ls /var/www/html/glpi
+
+
+sudo cp -r /tmp/glpi_config_backup/* /var/www/html/glpi/config/
+sudo cp -r /tmp/glpi_files_backup/* /var/www/html/glpi/files/
+
+sudo chown -R www-data:www-data /var/www/html/glpi
+sudo chmod -R 755 /var/www/html/glpi
+sudo chmod -R 775 /var/www/html/glpi/files
+sudo systemctl restart apache2
