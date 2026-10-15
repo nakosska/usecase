@@ -59,3 +59,8 @@ sudo chown -R www-data:www-data /var/www/html/glpi
 sudo chmod -R 755 /var/www/html/glpi
 sudo chmod -R 775 /var/www/html/glpi/files
 sudo systemctl restart apache2
+
+
+
+sudo ln -s /var/www/html/glpi/install /var/www/html/glpi/public/install
+sudo systemctl restart apache2
