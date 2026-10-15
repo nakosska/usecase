@@ -86,3 +86,15 @@ sudo systemctl restart apache2
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(.*)$ index.php [QSA,L]
 </IfModule>
+
+
+
+
+ls -la /var/www/html/glpi/public/install
+
+sudo ln -s /var/www/html/glpi/install /var/www/html/glpi/public/install
+
+cat /etc/apache2/sites-available/glpi.conf
+
+
+sudo systemctl restart apache2
