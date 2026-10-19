@@ -108,11 +108,30 @@ sudo nano /var/www/html/glpi/public/.htaccess
     RewriteEngine On
     RewriteRule ^install/(.*)$ index.php [QSA,L]
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ index.php [QSA,L]
+    RewriteCond %{REQUEST_F
+    ILENAME} !-d
+    RewriteRule ^(.*)$ index
+    .php [QSA,L]
 </IfModule>
 
 
-sudo rm -f /var/www/html/glpi/public/install
+
+
+
+
+sudo mysqldump --all-databases > /backup/all_databases_before_mariadb13.sql
+
+curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo bash -s -- --mariadb-server-version=mariadb-13.0
+
+
+sudo apt update
+sudo apt install mariadb-server mariadb-client -y
+
+
+sudo mariadb-upgrade -u root -p
+
+
+sudo systemctl restart mariadb
+mysql --version
 
 sudo systemctl restart apache2
