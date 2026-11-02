@@ -50,6 +50,49 @@ networks:
     driver: bridge
 
 
+
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: laravel_app
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    networks:
+      - laravel_network
+
+  web:
+    image: nginx:1.25-alpine
+    container_name: laravel_web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - laravel_network
+
+  db:
+    image: mariadb:10.11
+    container_name: laravel_db
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: laravel
+      MARIADB_USER: laravel_user
+      MARIADB_PASSWORD: secret
+      MARIADB_ROOT_PASSWORD: root_secret
+    networks:
+      - laravel_network
+
+networks:
+  laravel_network:
+    driver: bridge
+
     server {
     listen 80;
     root /var/www/public;
