@@ -1,137 +1,84 @@
-sudo apt update
-sudo apt install -y lsb-release ca-certificates curl gnupg
-curl -sSLo /tmp/debsuryorg-archive-keyring.deb https://packages.sury.org/debsuryorg-archive-keyring.deb
-sudo dpkg -i /tmp/debsuryorg-archive-keyring.deb
-echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/php.list
-sudo apt update
-sudo apt install -y php8.3 libapache2-mod-php8.3 php8.3-mysql php8.3-curl php8.3-gd php8.3-imap php8.3-ldap php8.3-xml php8.3-mbstring php8.3-xmlrpc php8.3-zip php8.3-bcmath php8.3-intl php8.3-redis
+FROM php:8.1-fpm
+
+RUN apt-get update && apt-get install -y \
+    libpng-dev libonig-dev libxml2-dev zip unzip \
+    && docker-php-ext-install pdo_mysql mbstring gd
+
+WORKDIR /var/www
+
+
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: laravel_app
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    networks:
+      - laravel_network
+
+  web:
+    image: nginx:1.25-alpine
+    container_name: laravel_web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - laravel_network
+
+  db:
+    image: mariadb:10.11
+    container_name: laravel_db
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: laravel
+      MARIADB_USER: laravel_user
+      MARIADB_PASSWORD: secret
+      MARIADB_ROOT_PASSWORD: root_secret
+    networks:
+      - laravel_network
+
+networks:
+  laravel_network:
+    driver: bridge
+
+
+    server {
+    listen 80;
+    root /var/www/public;
+    index index.php index.html;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_pass app:9000;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+}
+
+
+
+APP_NAME=Laravel
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost
+
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=laravel_user
+DB_PASSWORD=secret
 
 
-sudo a2dismod php8.4
-sudo a2enmod php8.3
-sudo systemctl restart apache2
-php -v
-
-
-sudo /home/debian/backup_glpi.sh
-
-
-cd /tmp
-sudo wget -O glpi12.tgz https://github.com/glpi-project/glpi/releases/download/12.0.0/glpi-12.0.0.tgz
-sudo tar -zxvf glpi12.tgz
-
-
-sudo cp -r /var/www/html/glpi/config /tmp/glpi_config_backup
-sudo cp -r /var/www/html/glpi/files /tmp/glpi_files_backup
-
-
-sudo mv /var/www/html/glpi /var/www/html/glpi_old
-sudo mv /tmp/glpi /var/www/html/glpi
-sudo cp -r /tmp/glpi_config_backup/* /var/www/html/glpi/config/
-sudo cp -r /tmp/glpi_files_backup/* /var/www/html/glpi/files/
-
-
-sudo chown -R www-data:www-data /var/www/html/glpi
-sudo chmod -R 755 /var/www/html/glpi
-sudo chmod -R 775 /var/www/html/glpi/files
-sudo systemctl restart apache2
-
-
-
-
-
-ls -d /tmp/glpi_config_backup /tmp/glpi_files_backup /var/www/html/glpi_old /var/www/html/glpi
-
-
-ls -lh /backup/glpi/
-
-
-sudo tar -xzvf /backup/glpi/glpi_files_2026-10-14.tar.gz -C /tmp/
-
-
-ls /var/www/html/glpi
-
-
-sudo cp -r /tmp/glpi_config_backup/* /var/www/html/glpi/config/
-sudo cp -r /tmp/glpi_files_backup/* 
-
-
-
-
-
-/var/www/html/glpi/files/
-
-sudo chown -R www-data:www-data /var/www/html/glpi
-sudo chmod -R 755 /var/www/html/glpi
-sudo chmod -R 775 /var/www/html/glpi/files
-sudo systemctl restart apache2
-
-
-
-sudo ln -s /var/www/html/glpi/install /var/www/html/glpi/public/install
-sudo systemctl restart apache2
-
-
-
-
-
-
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^(.*)$ index.php [QSA,L]
-</IfModule>
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^(.*)$ index.php [QSA,L]
-</IfModule>
-
-
-
-
-ls -la /var/www/html/glpi/public/install
-
-sudo ln -s /var/www/html/glpi/install /var/www/html/glpi/public/install
-
-cat /etc/apache2/sites-available/glpi.conf
-
-
-sudo systemctl restart apache2
-
-
-
-sudo nano /var/www/html/glpi/public/.htaccess
-
-
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteRule ^install/(.*)$ index.php [QSA,L]
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_F
-    ILENAME} !-d
-    RewriteRule ^(.*)$ index
-    .php [QSA,L]
-</IfModule>
-
-
-
-
-
-
-sudo mysqldump --all-databases > /backup/all_databases_before_mariadb13.sql
-
-curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo bash -s -- --mariadb-server-version=mariadb-13.0
-
-
-sudo apt update
-sudo apt install mariadb-server mariadb-client -y
-
-
-sudo mariadb-upgrade -u root -p
-
-
-sudo systemctl restart mariadb
-mysql --version
-
-sudo systemctl restart apache2
