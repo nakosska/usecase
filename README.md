@@ -1,4 +1,14 @@
-cat << 'EOF' > docker-compose.yml
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: laravel_app
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    networks:
+      - laravel_networkcat << 'EOF' > docker-compose.yml
 version: '3.8'
 
 services:
