@@ -202,3 +202,55 @@ echo "dmVyc2lvbjogJzMuOCcKCnNlcnZpY2VzOgogIGFwcDoKICAgIGJ1aWxkOiAuCiAgICBjb250YW
 
 
 printf "version: '3.8'\n\nservices:\n  app:\n    build: .\n    container_name: laravel_app\n    working_dir: /var/www\n    volumes:\n      - .:/var/www\n    networks:\n      - laravel_network\n\n  web:\n    image: nginx:1.25-alpine\n    container_name: laravel_web\n    restart: unless-stopped\n    ports:\n      - \"8080:80\"\n    volumes:\n      - .:/var/www\n      - ./nginx.conf:/etc/nginx/conf.d/default.conf\n    depends_on:\n      - app\n    networks:\n      - laravel_network\n\n  db:\n    image: mariadb:10.11\n    container_name: laravel_db\n    restart: unless-stopped\n    environment:\n      MARIADB_DATABASE: laravel\n      MARIADB_USER: laravel_user\n      MARIADB_PASSWORD: secret\n      MARIADB_ROOT_PASSWORD: root_secret\n    networks:\n      - laravel_network\n\nnetworks:\n  laravel_network:\n    driver: bridge\n" > docker-compose.yml
+
+
+
+
+
+echo "version: '3.8'" > docker-compose.yml
+echo "services:" >> docker-compose.yml
+
+
+echo "  app:" >> docker-compose.yml
+echo "    build: ." >> docker-compose.yml
+echo "    container_name: laravel_app" >> docker-compose.yml
+echo "    working_dir: /var/www" >> docker-compose.yml
+echo "    volumes:" >> docker-compose.yml
+echo "      - .:/var/www" >> docker-compose.yml
+echo "    networks:" >> docker-compose.yml
+echo "      - laravel_network" >> docker-compose.yml
+
+
+echo "  web:" >> docker-compose.yml
+echo "    image: nginx:1.25-alpine" >> docker-compose.yml
+echo "    container_name: laravel_web" >> docker-compose.yml
+echo "    restart: unless-stopped" >> docker-compose.yml
+echo "    ports:" >> docker-compose.yml
+echo "      - \"8080:80\"" >> docker-compose.yml
+echo "    volumes:" >> docker-compose.yml
+echo "      - .:/var/www" >> docker-compose.yml
+echo "      - ./nginx.conf:/etc/nginx/conf.d/default.conf" >> docker-compose.yml
+echo "    depends_on:" >> docker-compose.yml
+echo "      - app" >> docker-compose.yml
+echo "    networks:" >> docker-compose.yml
+echo "      - laravel_network" >> docker-compose.yml
+
+
+echo "  db:" >> docker-compose.yml
+echo "    image: mariadb:10.11" >> docker-compose.yml
+echo "    container_name: laravel_db" >> docker-compose.yml
+echo "    restart: unless-stopped" >> docker-compose.yml
+echo "    environment:" >> docker-compose.yml
+echo "      MARIADB_DATABASE: laravel" >> docker-compose.yml
+echo "      MARIADB_USER: laravel_user" >> docker-compose.yml
+echo "      MARIADB_PASSWORD: secret" >> docker-compose.yml
+echo "      MARIADB_ROOT_PASSWORD: root_secret" >> docker-compose.yml
+echo "    networks:" >> docker-compose.yml
+echo "      - laravel_network" >> docker-compose.yml
+
+
+echo "networks:" >> docker-compose.yml
+echo "  laravel_network:" >> docker-compose.yml
+echo "    driver: bridge" >> docker-compose.yml
+
+
