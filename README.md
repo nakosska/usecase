@@ -264,3 +264,16 @@ echo "  laravel_network:" >> docker-compose.yml
 echo "    driver: bridge" >> docker-compose.yml
 
 
+
+
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: laravel_app
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    networks:
+      - laravel_network
