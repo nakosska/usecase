@@ -289,3 +289,16 @@ python3 -c "print('''version: '3.8'\n\nservices:\n  app:\n    build: .\n    cont
 
 
 printf "server {\n    listen 80;\n    root /var/www/public;\n    index index.php index.html;\n\n    location / {\n        try_files \$uri \$uri/ /index.php?\$query_string;\n    }\n\n    location ~ \\.php\$ {\n        include fastcgi_params;\n        fastcgi_pass app:9000;\n        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;\n    }\n}\n" > nginx.conf
+
+
+echo '<?php
+define("LARAVEL_START", microtime(true));
+require __DIR__."/vendor/autoload.php";
+$app = require_once __DIR__."/bootstrap/app.php";
+$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$status = $kernel->handle(
+    $input = new Symfony\Component\Console\Input\ArgvInput,
+    new Symfony\Component\Console\Output\ConsoleOutput
+);
+$kernel->terminate($input, $status);
+exit($status);' > artisan
