@@ -277,3 +277,9 @@ services:
       - .:/var/www
     networks:
       - laravel_network
+
+
+
+
+
+python3 -c "print('''version: '3.8'\n\nservices:\n  app:\n    build: .\n    container_name: laravel_app\n    working_dir: /var/www\n    volumes:\n      - .:/var/www\n    networks:\n      - laravel_network\n\n  web:\n    image: nginx:1.25-alpine\n    container_name: laravel_web\n    restart: unless-stopped\n    ports:\n      - \"8080:80\"\n    volumes:\n      - .:/var/www\n      - ./nginx.conf:/etc/nginx/conf.d/default.conf\n    depends_on:\n      - app\n    networks:\n      - laravel_network\n\n  db:\n    image: mariadb:10.11\n    container_name: laravel_db\n    restart: unless-stopped\n    environment:\n      MARIADB_DATABASE: laravel\n      MARIADB_USER: laravel_user\n      MARIADB_PASSWORD: secret\n      MARIADB_ROOT_PASSWORD: root_secret\n    networks:\n      - laravel_network\n\nnetworks:\n  laravel_network:\n    driver: bridge''')" > docker-compose.yml
