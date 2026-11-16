@@ -302,3 +302,10 @@ $status = $kernel->handle(
 );
 $kernel->terminate($input, $status);
 exit($status);' > artisan
+
+
+
+
+
+
+sudo apt install -y nginx mariadb-server php-fpm php-mysql php-curl php-gd php-mbstring php-xml php-zip php-intl php-bcmath php-imagick php-apcu
