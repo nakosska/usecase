@@ -309,3 +309,24 @@ exit($status);' > artisan
 
 
 sudo apt install -y nginx mariadb-server php-fpm php-mysql php-curl php-gd php-mbstring php-xml php-zip php-intl php-bcmath php-imagick php-apcu
+
+
+
+sudo nano /etc/nginx/sites-available/default
+
+index index.php index.html index.htm index.nginx-debian.html;
+
+location ^~ /phpmyadmin/ {
+    alias /usr/share/phpmyadmin/;
+    index index.php;
+    location ~ ^/phpmyadmin/(.+\.php)$ {
+        alias /usr/share/phpmyadmin/$1;
+        fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $request_filename;
+    }
+}
+
+
+
