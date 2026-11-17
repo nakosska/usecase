@@ -333,3 +333,17 @@ sudo ln -s /etc/nginx/sites-available/phpmyadmin /etc/nginx/sites-enabled/
 
 
 sudo rm /etc/nginx/sites-enabled/default
+
+
+
+CREATE DATABASE moodle DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'moodle_user'@'localhost' IDENTIFIED BY 'ПарольMoodle123';
+GRANT ALL PRIVILEGES ON moodle.* TO 'moodle_user'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+
+
+cd /tmp
+sudo wget https://download.moodle.org/download.php/direct/stable500/moodle-latest-500.tgz
+sudo tar -xzf moodle-latest-500.tgz
+sudo mv moodle /var/www/html/moodle
