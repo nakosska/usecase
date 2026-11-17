@@ -329,4 +329,7 @@ location ^~ /phpmyadmin/ {
 }
 
 
+sudo ln -s /etc/nginx/sites-available/phpmyadmin /etc/nginx/sites-enabled/
 
+
+sudo rm /etc/nginx/sites-enabled/default
