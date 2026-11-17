@@ -347,3 +347,56 @@ cd /tmp
 sudo wget https://download.moodle.org/download.php/direct/stable500/moodle-latest-500.tgz
 sudo tar -xzf moodle-latest-500.tgz
 sudo mv moodle /var/www/html/moodle
+
+
+
+sudo mkdir /var/moodledata
+sudo chown -R www-data:www-data /var/moodledata
+sudo chmod -R 0777 /var/moodledata
+sudo chown -R www-data:www-data /var/www/html/moodle
+
+
+sudo rm /etc/nginx/sites-enabled/phpmyadmin
+
+
+sudo nano /etc/nginx/sites-available/moodle
+
+server {
+    listen 80;
+    server_name _;
+    root /var/www/html/moodle/public;
+    index index.php index.html index.htm;
+
+    # Настройки для Moodle (главная страница)
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ [^/]\.php(/|$) {
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+
+    # Настройки для phpMyAdmin (по адресу 127.0.0.1:8080/phpmyadmin)
+    location ^~ /phpmyadmin/ {
+        alias /usr/share/phpmyadmin/;
+        index index.php;
+        location ~ ^/phpmyadmin/(.+\.php)$ {
+            alias /usr/share/phpmyadmin/$1;
+            fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+            fastcgi_index index.php;
+            include fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME $request_filename;
+        }
+    }
+}
+
+
+sudo nginx -t
+sudo systemctl reload nginx
+
+
