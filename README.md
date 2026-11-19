@@ -416,3 +416,6 @@ sudo -u www-data php /var/www/html/moodle/admin/cli/install_database.php \
 --fullname="Moodle" \
 --shortname="moodle" \
 --agree-license
+
+
+sudo -u www-data php /var/www/html/moodle/admin/cli/install_database.php --adminpass="AdminPass123!" --adminemail="admin@example.com" --fullname="Moodle" --shortname="moodle" --agree-license
