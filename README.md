@@ -419,3 +419,39 @@ sudo -u www-data php /var/www/html/moodle/admin/cli/install_database.php \
 
 
 sudo -u www-data php /var/www/html/moodle/admin/cli/install_database.php --adminpass="AdminPass123!" --adminemail="admin@example.com" --fullname="Moodle" --shortname="moodle" --agree-license
+
+
+
+server {
+    listen 80;
+    server_name _;
+    root /var/www/html/moodle/public;
+    index index.php index.html index.htm;
+
+    location / {
+        # Если файл или папка не найдены, перенаправляем на маршрутизатор Moodle
+        try_files $uri $uri/ /r.php$is_args$args;
+    }
+
+    location ~ [^/]\.php(/|$) {
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+
+    # Блок для phpMyAdmin (оставляем без изменений)
+    location ^~ /phpmyadmin/ {
+        alias /usr/share/phpmyadmin/;
+        index index.php;
+        location ~ ^/phpmyadmin/(.+\.php)$ {
+            alias /usr/share/phpmyadmin/$1;
+            fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+            fastcgi_index index.php;
+            include fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME $request_filename;
+        }
+    }
+}
