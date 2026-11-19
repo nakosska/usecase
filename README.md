@@ -410,3 +410,9 @@ sudo -u www-data php -r "new mysqli('localhost', 'moodleuser', 'ваш_паро�
 sudo -u www-data php /var/www/html/moodle/admin/cli/install.php --wwwroot="http://127.0.0.1:8080" --dataroot="/var/www/moodledata" --dbtype="mariadb" --dbhost="localhost" --dbname="moodle" --dbuser="moodleuser" --dbpass="ваш_пароль" --fullname="Moodle" --shortname="moodle" --adminpass="AdminPass123!" --non-interactive
 
 
+sudo -u www-data php /var/www/html/moodle/admin/cli/install_database.php \
+--adminpass="AdminPass123!" \
+--adminemail="admin@example.com" \
+--fullname="Moodle" \
+--shortname="moodle" \
+--agree-license
