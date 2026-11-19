@@ -400,3 +400,13 @@ sudo nginx -t
 sudo systemctl reload nginx
 
 
+SHOW GRANTS FOR 'moodleuser'@'localhost';
+
+GRANT ALL PRIVILEGES ON moodle.* TO 'moodleuser'@'localhost';
+FLUSH PRIVILEGES;
+
+sudo -u www-data php -r "new mysqli('localhost', 'moodleuser', 'ваш_пароль', 'moodle'); echo 'OK';"
+
+sudo -u www-data php /var/www/html/moodle/admin/cli/install.php --wwwroot="http://127.0.0.1:8080" --dataroot="/var/www/moodledata" --dbtype="mariadb" --dbhost="localhost" --dbname="moodle" --dbuser="moodleuser" --dbpass="ваш_пароль" --fullname="Moodle" --shortname="moodle" --adminpass="AdminPass123!" --non-interactive
+
+
