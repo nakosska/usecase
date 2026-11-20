@@ -503,3 +503,17 @@ server {
 }
 
 
+
+
+location ^~ /phpmyadmin/ {
+    alias /usr/share/phpmyadmin/;
+    index index.php;
+    location ~ ^/phpmyadmin/(.+\.php)$ {
+        alias /usr/share/phpmyadmin/$1;
+        fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $request_filename;
+        fastcgi_param HTTPS on;
+        fastcgi_param HTTP_X_FORWARDED_PROTO https;
+    }
+}
