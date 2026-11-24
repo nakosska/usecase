@@ -523,3 +523,17 @@ location ^~ /phpmyadmin/ {
 sudo iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE
 sudo iptables -A FORWARD -i enp0s8 -o enp0s3 -j ACCEPT
 sudo iptables -A FORWARD -i enp0s3 -o enp0s8 -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+
+
+Types: deb
+URIs: http://deb.debian.org/debian
+Suites: trixie trixie-updates
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+
+Types: deb
+URIs: http://security.debian.org/debian-security
+Suites: trixie-security
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
